@@ -4,6 +4,7 @@
   <p>
     Webpack is a module bundler. Its main purpose is to bundle JavaScript files for usage in a browser, yet it is also capable of transforming, bundling, or packaging just about any resource or asset.
   </p>
+  <p>Base Template: <a href="https://github.com/vedees/webpack-template">webpack-template</a></p>
   <p>Author: <a href="https://tocode.ru" target="_blank">To code</a> | <a href="https://www.youtube.com/playlist?list=PLkCrmfIT6LBQWN02hNj6r1daz7965GxsV" target="_blank">Youtube guide in Russian</a></p>
 </div>
 
@@ -12,10 +13,10 @@
 
 ``` bash
 # Download repository:
-git clone https://github.com/vedees/webpack-template webpack-template
+git clone https://github.com/vedees/webpack-template-pug webpack-template-pug
 
 # Go to the app:
-cd webpack-template
+cd webpack-template-pug
 
 # Install dependencies:
 npm install
@@ -29,14 +30,16 @@ npm run build
 
 ## Project Structure:
 
-* `src/index.html` - main app HTML
+* `src/pug/layout` - put custom layout for pages
+* `src/pug/includes` - all app includes
+* `src/pug/utils` - pug mixins and other
+* `src/pug/pages` - put custom app pages. Don't forget to import them in `index.js`
 * `src/assets/scss` - put custom app SCSS styles here. Don't forget to import them in `index.js`
 * `src/assets/css` - the same as above but CSS here. Don't forget to import them in `index.js`
 * `src/assets/img` - put images here. Don't forget to use correct path: `assets/img/some.jpg`
 * `src/js` - put custom app scripts here
 * `src/index.js` - main app file where you include/import all required libs and init app
 * `src/components` - folder with custom `.vue` components
-* `src/store` - app store for vue
 * `static/` - folder with extra static assets that will be copied into output folder
 
 <div align="center">
@@ -77,6 +80,7 @@ const PATHS = {
 import React from 'react'
 // Bootstrap example
 import Bootstrap from 'bootstrap/dist/js/bootstrap.min.js'
+// or
 import 'bootstrap/dist/js/bootstrap.min.js'
 ```
 
@@ -99,67 +103,50 @@ import 'bootstrap/dist/js/bootstrap.min.js'
 import './common.js'
 ```
 
-## HTML Dir Folder:
+## PUG Dir Folder:
 #### Default:
-* .html dir: `./src`
+* .pug dir: `./pug/pages`
 * Configurations: in `./build/webpack.base.conf.js`
-``` js
-const PAGES_DIR = PATHS.src
-```
 **Usage:**
-All files must be created in the `./src` folder.
+All files must be created in the `./pug/pages` folder.
 Example:
 ``` bash
-./src/index.html
-./src/about.html
+./pug/pages/index.pug
+./pug/pages/about.pug
 ```
 
-#### Change HTML Default Dir Folder:
-Example for `./src/pages`:
-1. Create folder for all html files in `./src`. Be like: `./src/pages`
-2. Change `./build/webpack.base.conf.js` const PAGES_DIR:
+#### Change PUG Default Dir Folder:
+Example for `./pug/mynewfolder/pages`:
+* Change `./build/webpack.base.conf.js` const PAGES_DIR:
 ``` js
-// Old path
-// const PAGES_DIR = PATHS.src
-
 // Your new path
-const PAGES_DIR = `${PATHS.src}/pages`
+const PAGES_DIR = `${PATHS.src}/pug/mynewfolder/pages/`
 ```
 3. Rerun webpack dev server
 
-
-**Usage:**
-All files must be created in the `./src/pages` folder.
-Example:
-``` bash
-./src/pages/index.html
-./src/pages/about.html
-```
-
-## Create Another HTML Files:
+## Create Another PUG Files:
 #### Default: 
-Automatic creation any html pages:
-1. Create another html file in `./src` (main folder)
+Automatic creation any pug pages:
+1. Create another pug file in `./pug/pages/`
 2. Open new page `http://localhost:8081/about.html` (Don't forget to RERUN dev server)
-See more - [commit](https://github.com/vedees/webpack-template/commit/249e3ae3b4973a7300f271045178f9f5f431bb89)
 
 #### Second method:
-Manual (not Automaticlly) creation any html pages (Don't forget to RERUN dev server and COMMENT lines above)
-1. Create another html file in `./src` (main folder)
+Manual (not Automaticlly) creation any pug pages (Don't forget to RERUN dev server and COMMENT lines above)
+1. Create another pug file in `./pug/pages/`
 2. Go to `./build/webpack.base.conf.js`
-3. Comment lines above (create automaticlly html pages)
-4. Create new page in html:
+3. Comment lines above (create automaticlly pug pages)
+4. Create new page in pug:
 ``` js
     new HtmlWebpackPlugin({
-      template: `${PAGES_DIR}/index.html`,
-      filename: './index.html',
+      template: `${PAGES_DIR}/about/index.pug`,
+      filename: './about/index.html',
       inject: true
     }),
     new HtmlWebpackPlugin({
-      template: `${PAGES_DIR}/another.html`,
-      filename: './another.html',
+      template: `${PAGES_DIR}/about/portfolio.pug`,
+      filename: './about/portfolio.html',
       inject: true
-    }),
+    })
 ```
 5. Open new page `http://localhost:8081/about.html` (Don't forget to RERUN dev server)
 
@@ -169,18 +156,13 @@ Example:
 ``` js
     ...PAGES.map(page => new HtmlWebpackPlugin({
       template: `${PAGES_DIR}/${page}`,
-      filename: `./${page}`
-    })),
+      filename: `./${page.replace(/\.pug/,'.html')}`
+    }))
     new HtmlWebpackPlugin({
-      template: `${PAGES_DIR}/about/index.html`,
+      template: `${PAGES_DIR}/about/index.pug`,
       filename: './about/index.html',
       inject: true
-    }),
-    new HtmlWebpackPlugin({
-      template: `${PAGES_DIR}/about/portfolio.html`,
-      filename: './about/portfolio.html',
-      inject: true
-    }),
+    })
 ```
 
 
@@ -198,10 +180,9 @@ const app = new Vue({
 })
 ```
 3. Create div id app
-``` html
-<div id="app">
-  <!-- content -->
-</div>
+``` pug
+#app
+  //- Content
 ```
 
 ## Vuex install:
@@ -227,14 +208,14 @@ export default new Vuex.Store({
 ## Add Vue Components:
 Create your component in `/components/`
 
-**HTML Usage:**
+**PUG Usage:**
 1. Init component in `index.js`:
 ``` js
 Vue.component('example-component', require('./components/Example.vue').default)
 ```
-2. Any html files:
-``` html
- <example-component />
+2. Any pug files:
+``` pug
+example-component
 ```
 
 **VUE Usage:**
