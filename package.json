@@ -46,6 +46,7 @@
     "postcss-loader": "^3.0.0",
     "pug": "^2.0.4",
     "pug-loader": "^2.4.0",
+    "pug-plain-loader": "^1.0.0",
     "sass-loader": "^8.0.0",
     "style-loader": "^1.0.0",
     "vue-loader": "^15.7.1",

@@ -1,10 +1,8 @@
-<template>
-  <section>
-    <div class="container">
-      <img src="/assets/img/logo.png" :alt="message">
-      <p>{{ message }}</p>
-    </div>
-  </section>
+<template lang="pug">
+  section
+    .container
+      img(src="/assets/img/logo.png" :alt="message")
+      p {{ message }}
 </template>
 
 <script>

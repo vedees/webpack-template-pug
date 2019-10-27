@@ -48,7 +48,17 @@ module.exports = {
   module: {
     rules: [{
       test: /\.pug$/,
-      loader: 'pug-loader'
+      oneOf: [
+        // this applies to <template lang="pug"> in Vue components
+        {
+          resourceQuery: /^\?vue/,
+          use: ['pug-plain-loader']
+        },
+        // this applies to pug imports inside JavaScript
+        {
+          use: ['pug-loader']
+        }
+      ]
     }, {
       test: /\.js$/,
       loader: 'babel-loader',
